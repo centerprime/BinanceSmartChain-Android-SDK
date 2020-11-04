@@ -1,4 +1,4 @@
-# CenterPrime Binance Chain Client SDK 
+# Binance Chain Client SDK 
 
 
 ## Table of Contents
