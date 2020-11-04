@@ -24,16 +24,7 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println(error);
                 });
 
-        binanceManager.getBNBBalance("0x8902dab5179D5B91F8c1ed8329501374a78A0B4d")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(balance->{
-                    System.out.println(balance);
-                }, error -> {
-                   error.printStackTrace();
-                });
+
 
     }
 }
