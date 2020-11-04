@@ -4,18 +4,16 @@
 ## Table of Contents
 
 - [Getting Started](#getting-started)
-  - [Adding Ethereum SDK as a Maven Dependency](#adding-ethereum-sdk-as-a-maven-dependency)
+  - [Adding Binancce SmartChain SDK as a Maven Dependency](#adding-ethereum-sdk-as-a-maven-dependency)
   - [Basic Usage](#basic-usage)
 - [Features at a Glance](#features-at-a-glance)
   - [Create Wallet](#create-wallet)
   - [Import Wallet By Keystore](#import-wallet-by-keystore)
   - [Import Wallet By Private Key](#import-wallet-by-private-key)
-  - [Export Keystore](#export-keystore)
-  - [Export Private Key](#export-private-key)
-  - [Ethereum Balance](#ethereum-balance)
-  - [ERC20 token balance](#erc20-token-balance)
-  - [Send Ether](#send-ether)
-  - [Send ERC20 Token](#send-erc20-token)
+  - [BNB Balance](#ethereum-balance)
+  - [BEP20 token balance](#erc20-token-balance)
+  - [Send BNB](#send-ether)
+  - [Send BEP20 Token](#send-erc20-token)
 
 ## Getting Started
 
