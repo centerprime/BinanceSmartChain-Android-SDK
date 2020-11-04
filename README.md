@@ -24,8 +24,8 @@ Maven:
 ```xml
 <dependency>
 	    <groupId>com.github.centerprime</groupId>
-	    <artifactId>ethereum-client</artifactId>
-	    <version>1.0.4</version>
+	    <artifactId>Binance-Chain-Client-SDK</artifactId>
+	    <version>1.0.1</version>
 </dependency>
 ```
 
@@ -33,7 +33,7 @@ Gradle:
 
 ```groovy
 dependencies {
-    implementation 'com.github.centerprime:ethereum-client:1.0.4'
+    implementation 'com.github.centerprime:Binance-Chain-Client-SDK:1.0.1'
 }
 ```
 
