@@ -58,19 +58,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        EthManager ethManager = EthManager.getInstance();
+        BinanceManager binanceManager = BinanceManager.getInstance();
 
-        String password = "xxxx12345";
-
-        ethManager.createWallet(password, this)
+        binanceManager.createWallet("12345", this)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(walletAddress -> {
-
-                    Toast.makeText(this, "Wallet Address : " + walletAddress, Toast.LENGTH_SHORT).show();
-
+                .subscribe(wallet -> {
+                    String walletAddress = wallet.getAddress();
+                    String keystore = wallet.getKeystore();
                 }, error -> {
-
+                    System.out.println(error);
                 });
     }
 }
@@ -82,31 +79,31 @@ public class MainActivity extends AppCompatActivity {
 
 ### Create Wallet
 
-> You can create Ethereum Wallet.
+> You can create Binance SmartChian Wallet.
 ```java
-EthManager ethManager = EthManager.getInstance();
-String password = "xxxx12345";
-ethManager.createWallet(password, this)
+BinanceManager binanceManager = BinanceManager.getInstance();
+
+binanceManager.createWallet("12345", this)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(walletAddress -> {
-
-                    Toast.makeText(this, "Wallet Address : " + walletAddress, Toast.LENGTH_SHORT).show();
-
+                .subscribe(wallet -> {
+                    String walletAddress = wallet.getAddress();
+                    String keystore = wallet.getKeystore();
                 }, error -> {
-
+                    System.out.println(error);
                 });
+
 ```
 
 ### Import Wallet By Keystore
 
-> Import Ethereum Walley by Keystore.
+> Import Binance SmartChain Wallet by Keystore.
 
 ```java
-EthManager ethManager = EthManager.getInstance();
+BinanceManager binanceManager = BinanceManager.getInstance();
 String password = "xxxx12345";
 String keystore = "JSON_FORMAT";
-ethManager.importFromKeystore(keystore, password, this)
+binanceManager.importFromKeystore(keystore, password, this)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(walletAddress -> {
@@ -122,9 +119,9 @@ ethManager.importFromKeystore(keystore, password, this)
 > Import Wallet By Private Key.
 
 ```java
-EthManager ethManager = EthManager.getInstance();
+BinanceManager binanceManager = BinanceManager.getInstance();
 String privateKey = "PRIVATE_KEY";
-ethManager.importFromPrivateKey(privateKey, this)
+binanceManager.importFromPrivateKey(privateKey, this)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(walletAddress -> {
@@ -136,53 +133,16 @@ ethManager.importFromPrivateKey(privateKey, this)
                 });
 ```
 
-### Export Keystore
 
-> Export Keystore.
+### BNB Balance
 
-```java
-EthManager ethManager = EthManager.getInstance();
-String walletAddress = "WALLET_ADDRESS";
-ethManager.getKeyStore(walletAddress, this)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(keystore -> {
-
-                    Toast.makeText(this, "Keystore : " + keystore, Toast.LENGTH_SHORT).show();
-
-                }, error -> {
-
-                });
-```
-
-### Export Private Key
-
-> Export Private Key.
+> BNB Balance.
 
 ```java
-EthManager ethManager = EthManager.getInstance();
+BinanceManager binanceManager = BinanceManager.getInstance();
+binanceManager.init("https://data-seed-prebsc-1-s1.binance.org:8545");
 String walletAddress = "WALLET_ADDRESS";
-String password = "WALLET_PASSWORD";
-ethManager.exportPrivateKey(walletAddress, password,this)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(privatekey -> {
-
-                    Toast.makeText(this, "Private Key : " + privatekey, Toast.LENGTH_SHORT).show();
-
-                }, error -> {
-
-                });
-```
-
-### Ethereum Balance
-
-> Ethereum Balance.
-
-```java
-EthManager ethManager = EthManager.getInstance();
-String walletAddress = "WALLET_ADDRESS";
-ethManager.balanceInEth(walletAddress)
+binanceManager.getBNBBalance(walletAddress)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(balance -> {
@@ -193,16 +153,17 @@ ethManager.balanceInEth(walletAddress)
 
                 });
 ```
-### ERC20 token balance
+### BEP20 token balance
 
-> ERC20 token balance.
+> BEP20 token balance.
 
 ```java
-EthManager ethManager = EthManager.getInstance();
+BinanceManager binanceManager = BinanceManager.getInstance();
+binanceManager.init("https://data-seed-prebsc-1-s1.binance.org:8545");
 String walletAddress = "WALLET_ADDRESS";
 String password = "WALLET_PASSWORD";
-String erc20TokenContractAddress = "ERC_20_TOKEN_CONTRACT_ADDRESS";
-ethManager.getTokenBalance(walletAddress, password, erc20TokenContractAddress, this)
+String bep20TokenContractAddress = "BEP_20_TOKEN_CONTRACT_ADDRESS";
+binanceManager.getTokenBalance(walletAddress, password, bep20TokenContractAddress, this)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(balance -> {
@@ -214,19 +175,20 @@ ethManager.getTokenBalance(walletAddress, password, erc20TokenContractAddress, t
                 });
 ```
 
-### Send Ether
+### Send BNB
 
-> Send Ether.
+> Send BNB.
 
 ```java
-EthManager ethManager = EthManager.getInstance();
+BinanceManager binanceManager = BinanceManager.getInstance();
+binanceManager.init("https://data-seed-prebsc-1-s1.binance.org:8545");
 String walletAddress = "WALLET_ADDRESS";
 String password = "WALLET_PASSWORD";
 BigInteger gasPrice = new BigInteger("GAS_PRICE");
 BigInteger gasLimit = new BigInteger("GAS_LIMIT");
 BigDecimal etherAmount = new BigDecimal("ETHER_AMOUNT");
 String receiverAddress = "RECEIVER_WALLET_ADDRESS";
-ethManager.sendEther(walletAddress, password,gasPrice,gasLimit,etherAmount, receiverAddress, this)
+binanceManager.sendBNB(walletAddress, password,gasPrice,gasLimit,etherAmount, receiverAddress, this)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(tx -> {
@@ -237,20 +199,21 @@ ethManager.sendEther(walletAddress, password,gasPrice,gasLimit,etherAmount, rece
 
                 });
 ```
-### Send ERC20 token
+### Send BEP20 token
 
-> Send ERC20 token.
+> Send BEP20 token.
 
 ```java
-EthManager ethManager = EthManager.getInstance();
+BinanceManager binanceManager = BinanceManager.getInstance();
+binanceManager.init("https://data-seed-prebsc-1-s1.binance.org:8545");
 String walletAddress = "WALLET_ADDRESS";
 String password = "WALLET_PASSWORD";
 BigInteger gasPrice = new BigInteger("GAS_PRICE");
 BigInteger gasLimit = new BigInteger("GAS_LIMIT");
 BigDecimal tokenAmount = new BigDecimal("TOKEN_AMOUNT");
 String receiverAddress = "RECEIVER_WALLET_ADDRESS";
-String erc20TokenContractAddress = "ERC20_TOKEN_CONTRACT_ADDRESS";
-ethManager.sendToken(walletAddress, password, gasPrice, gasLimit, tokenAmount, receiverAddress, erc20TokenContractAddress, this)
+String bep20TokenContractAddress = "ERC20_TOKEN_CONTRACT_ADDRESS";
+ethManager.sendToken(walletAddress, password, gasPrice, gasLimit, tokenAmount, receiverAddress, bep20TokenContractAddress, this)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(tx -> {
