@@ -178,7 +178,7 @@ String walletAddress = "WALLET_ADDRESS";
 String password = "WALLET_PASSWORD";
 BigInteger gasPrice = new BigInteger("GAS_PRICE");
 BigInteger gasLimit = new BigInteger("GAS_LIMIT");
-BigDecimal bnbAmount = new BigDecimal("ETHER_AMOUNT");
+BigDecimal bnbAmount = new BigDecimal("BNB_AMOUNT");
 String receiverAddress = "RECEIVER_WALLET_ADDRESS";
 binanceManager.sendBNB(walletAddress, password,gasPrice,gasLimit,bnbAmount, receiverAddress, this)
                 .subscribeOn(Schedulers.io())
