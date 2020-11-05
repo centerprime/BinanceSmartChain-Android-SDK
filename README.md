@@ -42,12 +42,6 @@ dependencies {
 Once you have the dependencies set up you can start using *CenterPrime* by creating a `Binance SmartChain Wallet`:
 
 ```java
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
-import com.centerprime.ethereum_sdk.EthManager;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -184,9 +178,9 @@ String walletAddress = "WALLET_ADDRESS";
 String password = "WALLET_PASSWORD";
 BigInteger gasPrice = new BigInteger("GAS_PRICE");
 BigInteger gasLimit = new BigInteger("GAS_LIMIT");
-BigDecimal etherAmount = new BigDecimal("ETHER_AMOUNT");
+BigDecimal bnbAmount = new BigDecimal("ETHER_AMOUNT");
 String receiverAddress = "RECEIVER_WALLET_ADDRESS";
-binanceManager.sendBNB(walletAddress, password,gasPrice,gasLimit,etherAmount, receiverAddress, this)
+binanceManager.sendBNB(walletAddress, password,gasPrice,gasLimit,bnbAmount, receiverAddress, this)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(tx -> {
