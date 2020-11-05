@@ -39,7 +39,7 @@ dependencies {
 
 ### Basic Usage
 
-Once you have the dependencies set up you can start using *CenterPrime* by creating a `Ethereum Wallet`:
+Once you have the dependencies set up you can start using *CenterPrime* by creating a `Binance SmartChain Wallet`:
 
 ```java
 import android.os.Bundle;
@@ -210,7 +210,7 @@ BigInteger gasPrice = new BigInteger("GAS_PRICE");
 BigInteger gasLimit = new BigInteger("GAS_LIMIT");
 BigDecimal tokenAmount = new BigDecimal("TOKEN_AMOUNT");
 String receiverAddress = "RECEIVER_WALLET_ADDRESS";
-String bep20TokenContractAddress = "ERC20_TOKEN_CONTRACT_ADDRESS";
+String bep20TokenContractAddress = "BEP20_TOKEN_CONTRACT_ADDRESS";
 ethManager.sendToken(walletAddress, password, gasPrice, gasLimit, tokenAmount, receiverAddress, bep20TokenContractAddress, this)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
