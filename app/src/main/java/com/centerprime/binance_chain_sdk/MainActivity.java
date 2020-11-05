@@ -14,17 +14,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         BinanceManager binanceManager = BinanceManager.getInstance();
-
+        binanceManager.init("https://data-seed-prebsc-1-s1.binance.org:8545");
         binanceManager.createWallet("12345", this)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(wallet -> {
-                    System.out.println(wallet);
+                    String walletAddress = wallet.getAddress();
+                    String keystore = wallet.getKeystore();
                 }, error -> {
                     System.out.println(error);
                 });
-
-
 
     }
 }
