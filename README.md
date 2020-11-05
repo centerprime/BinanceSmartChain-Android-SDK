@@ -17,7 +17,7 @@
 
 ## Getting Started
 
-### Adding Ethereum SDK as a Maven Dependency
+### Adding Binance Chain Client SDK as a Maven Dependency
 
 Maven:
 
