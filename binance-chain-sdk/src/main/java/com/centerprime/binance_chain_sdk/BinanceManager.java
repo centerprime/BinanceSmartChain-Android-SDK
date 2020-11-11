@@ -140,12 +140,16 @@ public class BinanceManager {
      */
     public Single<String> getKeyStore(String walletAddress, Context context) {
         return Single.fromCallable(() -> {
-            String walletPath = context.getFilesDir() + "/" + walletAddress.toLowerCase();
+            String wallet = walletAddress;
+            if (wallet.startsWith("0x")) {
+                wallet = wallet.substring(2);
+            }
+            String walletPath = context.getFilesDir() + "/" + wallet.toLowerCase();
             File keystoreFile = new File(walletPath);
             if (keystoreFile.exists()) {
                 return read_file(context, keystoreFile.getName());
             } else {
-                return null;
+                throw new Exception("Keystore is NULL");
             }
         });
     }
