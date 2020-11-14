@@ -1,4 +1,4 @@
-# Binance Chain Client SDK 
+# Binance SmartChain Client SDK 
 
 
 ## Table of Contents
@@ -17,7 +17,7 @@
 
 ## Getting Started
 
-### Adding Binance Chain Client SDK as a Maven Dependency
+### Adding Binance SmartChain Client SDK as a Maven Dependency
 
 Maven:
 
