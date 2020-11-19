@@ -275,7 +275,7 @@ public class BinanceManager {
 
                     HashMap<String, Object> body = new HashMap<>();
                     body.put("action_type", "TOKEN_BALANCE");
-                    body.put("wallet_address", address);
+                    body.put("wallet_address", walletAddress);
                     body.put("balance", BalanceUtils.weiToEth(tokenBalance.getValue()));
                     sendEventToLedger(body);
 
@@ -328,7 +328,7 @@ public class BinanceManager {
     /**
      * Send Token
      */
-    public Single<TransactionReceipt> sendToken(String walletAddress, String password,
+    public Single<String> sendToken(String walletAddress, String password,
                                                 BigInteger gasPrice,
                                                 BigInteger gasLimit,
                                                 BigDecimal tokenAmount,
@@ -357,7 +357,7 @@ public class BinanceManager {
                     body.put("status", "SUCCESS");
                     sendEventToLedger(body);
 
-                    return Single.just(mReceipt);
+                    return Single.just(mReceipt.getTransactionHash());
                 });
     }
 
