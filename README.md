@@ -33,7 +33,7 @@ Gradle:
 
 ```groovy
 dependencies {
-    implementation 'com.github.centerprime:Binance-Chain-Client-SDK:1.0.7'
+    implementation 'com.github.centerprime:Binance-Chain-Client-SDK:1.0.9'
 }
 ```
 
