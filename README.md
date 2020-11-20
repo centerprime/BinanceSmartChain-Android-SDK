@@ -4,7 +4,7 @@
 ## Table of Contents
 
 - [Getting Started](#getting-started)
-  - [Adding Binancce SmartChain SDK as a Maven Dependency](#adding-binance-smartchain-sdk-as-a-maven-dependency)
+  - [Adding Binance SmartChain SDK as a Maven Dependency](#adding-binance-smartchain-sdk-as-a-maven-dependency)
   - [Basic Usage](#basic-usage)
 - [Features at a Glance](#features-at-a-glance)
   - [Create Wallet](#create-wallet)
