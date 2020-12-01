@@ -16,6 +16,15 @@
   - [Send BEP20 Token](#send-bep20-token)
 
 ## Getting Started
+### Add jitpack to your root gradle file at the end of repositories:
+```xml
+allprojects {
+    repositories {
+	...
+        maven { url 'https://jitpack.io'}
+    }
+}
+```
 
 ### Adding Binance SmartChain SDK as a Maven Dependency
 
