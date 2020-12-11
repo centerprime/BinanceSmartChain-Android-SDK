@@ -22,11 +22,13 @@ public class MainActivity extends AppCompatActivity {
         binanceManager.init("https://bsc-dataseed1.binance.org:443");
 
 
+
 /*        binanceManager.createWallet("12345", this)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(wallet -> {
                     String walletAddress = wallet.getAddress();
+
                     String keystore = wallet.getKeystore();
                     System.out.println("*** ***"+walletAddress);
                 }, error -> {
@@ -36,5 +38,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
 
 }
