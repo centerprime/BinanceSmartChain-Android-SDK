@@ -4,20 +4,29 @@
 ## Table of Contents
 
 - [Getting Started](#getting-started)
-  - [Adding Binancce SmartChain SDK as a Maven Dependency](#adding-ethereum-sdk-as-a-maven-dependency)
+  - [Adding Binance SmartChain SDK as a Maven Dependency](#adding-binance-smartchain-sdk-as-a-maven-dependency)
   - [Basic Usage](#basic-usage)
 - [Features at a Glance](#features-at-a-glance)
   - [Create Wallet](#create-wallet)
   - [Import Wallet By Keystore](#import-wallet-by-keystore)
   - [Import Wallet By Private Key](#import-wallet-by-private-key)
-  - [BNB Balance](#ethereum-balance)
-  - [BEP20 token balance](#erc20-token-balance)
-  - [Send BNB](#send-ether)
-  - [Send BEP20 Token](#send-erc20-token)
+  - [BNB Balance](#bnb-balance)
+  - [BEP20 token balance](#bep20-token-balance)
+  - [Send BNB](#send-bnb)
+  - [Send BEP20 Token](#send-bep20-token)
 
 ## Getting Started
+### Add jitpack to your root gradle file at the end of repositories:
+```xml
+allprojects {
+    repositories {
+	...
+        maven { url 'https://jitpack.io'}
+    }
+}
+```
 
-### Adding Binance SmartChain Client SDK as a Maven Dependency
+### Adding Binance SmartChain SDK as a Maven Dependency
 
 Maven:
 
@@ -25,7 +34,7 @@ Maven:
 <dependency>
 	    <groupId>com.github.centerprime</groupId>
 	    <artifactId>Binance-Chain-Client-SDK</artifactId>
-	    <version>1.0.7</version>
+	    <version>1.0.9</version>
 </dependency>
 ```
 
@@ -33,7 +42,7 @@ Gradle:
 
 ```groovy
 dependencies {
-    implementation 'com.github.centerprime:Binance-Chain-Client-SDK:1.0.7'
+    implementation 'com.github.centerprime:Binance-Chain-Client-SDK:1.0.9'
 }
 ```
 

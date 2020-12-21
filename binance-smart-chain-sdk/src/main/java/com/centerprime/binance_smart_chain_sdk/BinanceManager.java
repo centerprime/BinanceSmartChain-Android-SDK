@@ -134,7 +134,6 @@ public class BinanceManager {
                 body.put("wallet_address", walletAddress);
                 body.put("status", "SUCCESS");
                 sendEventToLedger(body, context);
-
                 return new Wallet(walletAddress, keystore);
             } catch (CipherException | IOException | NoSuchAlgorithmException | InvalidAlgorithmParameterException | NoSuchProviderException e) {
                 e.printStackTrace();
@@ -178,7 +177,6 @@ public class BinanceManager {
                 body.put("wallet_address", walletAddress);
                 body.put("status", "SUCCESS");
                 sendEventToLedger(body, context);
-
                 return walletAddress;
             } catch (IOException e) {
                 body.put("status", "FAILURE");
@@ -206,7 +204,6 @@ public class BinanceManager {
                 body.put("wallet_address", walletAddress);
                 body.put("status", "SUCCESS");
                 sendEventToLedger(body, context);
-
                 return walletAddress;
             } catch (CipherException | IOException e) {
                 e.printStackTrace();
@@ -224,6 +221,13 @@ public class BinanceManager {
         return loadCredentials(walletAddress, password, context)
                 .flatMap(credentials -> {
                     String privateKey = credentials.getEcKeyPair().getPrivateKey().toString(16);
+
+                    HashMap<String, Object> body = new HashMap<>();
+                    body.put("action_type", "WALLET_EXPORT_PRIVATE_KEY");
+                    body.put("wallet_address", walletAddress);
+                    body.put("status", "SUCCESS");
+                    sendEventToLedger(body, context);
+
                     return Single.just(privateKey);
                 });
     }
@@ -243,7 +247,6 @@ public class BinanceManager {
             body.put("wallet_address", address);
             body.put("balance", BalanceUtils.weiToEth(valueInWei));
             sendEventToLedger(body, context);
-
             return BalanceUtils.weiToEth(valueInWei);
         });
     }
@@ -285,7 +288,7 @@ public class BinanceManager {
 
                     HashMap<String, Object> body = new HashMap<>();
                     body.put("action_type", "TOKEN_BALANCE");
-                    body.put("wallet_address", address);
+                    body.put("wallet_address", walletAddress);
                     body.put("balance", BalanceUtils.weiToEth(tokenBalance.getValue()));
                     sendEventToLedger(body, context);
 
@@ -329,6 +332,8 @@ public class BinanceManager {
                     body.put("status", "SUCCESS");
                     sendEventToLedger(body, context);
 
+
+
                     return Single.just(transactionHash);
                 });
     }
@@ -336,7 +341,7 @@ public class BinanceManager {
     /**
      * Send Token
      */
-    public Single<TransactionReceipt> sendToken(String walletAddress, String password,
+    public Single<String> sendToken(String walletAddress, String password,
                                                 BigInteger gasPrice,
                                                 BigInteger gasLimit,
                                                 BigDecimal tokenAmount,
@@ -365,7 +370,7 @@ public class BinanceManager {
                     body.put("status", "SUCCESS");
                     sendEventToLedger(body, context);
 
-                    return Single.just(mReceipt);
+                    return Single.just(mReceipt.getTransactionHash());
                 });
     }
 
@@ -416,24 +421,20 @@ public class BinanceManager {
         }
 
     }
-
     private HashMap<String, Object> deviceInfo(Context context) {
         try {
-
             String androidId = Settings.Secure.getString(context.getContentResolver(),
                     Settings.Secure.ANDROID_ID);
             String osName = "ANDROID";
             String serialNumber = Build.SERIAL;
             String model = Build.MODEL;
             String manufacturer = Build.MANUFACTURER;
-
             HashMap<String, Object> deviceInfo = new HashMap<>();
             deviceInfo.put("ID", androidId);
             deviceInfo.put("OS", osName);
             deviceInfo.put("MODEL", model);
             deviceInfo.put("SERIAL", serialNumber);
             deviceInfo.put("MANUFACTURER", manufacturer);
-
             return deviceInfo;
         } catch (Exception e) {
             e.printStackTrace();
