@@ -419,8 +419,8 @@ public class BinanceManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
+
     private HashMap<String, Object> deviceInfo(Context context) {
         try {
             String androidId = Settings.Secure.getString(context.getContentResolver(),
