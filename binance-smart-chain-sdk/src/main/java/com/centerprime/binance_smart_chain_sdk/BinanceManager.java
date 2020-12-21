@@ -1,6 +1,8 @@
 package com.centerprime.binance_smart_chain_sdk;
 
 import android.content.Context;
+import android.os.Build;
+import android.provider.Settings;
 
 import com.centerprime.binance_smart_chain_sdk.util.BalanceUtils;
 import com.centerprime.binance_smart_chain_sdk.util.CenterPrimeUtils;
@@ -9,6 +11,7 @@ import com.centerprime.binance_smart_chain_sdk.util.Erc20TokenWrapper;
 import com.centerprime.binance_smart_chain_sdk.util.HyperLedgerApi;
 import com.centerprime.binance_smart_chain_sdk.util.SubmitTransactionModel;
 import com.centerprime.binance_smart_chain_sdk.util.Wallet;
+import com.google.gson.Gson;
 
 import org.spongycastle.util.encoders.Hex;
 import org.web3j.abi.datatypes.Address;
@@ -65,7 +68,9 @@ public class BinanceManager {
      */
     private Web3j web3j;
 
-
+    /**
+     * Hyperledger Api
+     */
     private HyperLedgerApi hyperLedgerApi;
 
     /**
@@ -128,13 +133,14 @@ public class BinanceManager {
                 body.put("action_type", "WALLET_CREATE");
                 body.put("wallet_address", walletAddress);
                 body.put("status", "SUCCESS");
-                sendEventToLedger(body);
+                sendEventToLedger(body, context);
+
                 return new Wallet(walletAddress, keystore);
             } catch (CipherException | IOException | NoSuchAlgorithmException | InvalidAlgorithmParameterException | NoSuchProviderException e) {
                 e.printStackTrace();
                 body.put("status", "FAILURE");
             }
-            sendEventToLedger(body);
+            sendEventToLedger(body, context);
             return null;
         });
     }
@@ -171,13 +177,14 @@ public class BinanceManager {
                 body.put("action_type", "WALLET_IMPORT_KEYSTORE");
                 body.put("wallet_address", walletAddress);
                 body.put("status", "SUCCESS");
-                sendEventToLedger(body);
+                sendEventToLedger(body, context);
+
                 return walletAddress;
             } catch (IOException e) {
                 body.put("status", "FAILURE");
                 e.printStackTrace();
             }
-            sendEventToLedger(body);
+            sendEventToLedger(body, context);
             return null;
         });
     }
@@ -198,13 +205,14 @@ public class BinanceManager {
                 body.put("action_type", "WALLET_IMPORT_PRIVATE_KEY");
                 body.put("wallet_address", walletAddress);
                 body.put("status", "SUCCESS");
-                sendEventToLedger(body);
+                sendEventToLedger(body, context);
+
                 return walletAddress;
             } catch (CipherException | IOException e) {
                 e.printStackTrace();
                 body.put("status", "FAILURE");
             }
-            sendEventToLedger(body);
+            sendEventToLedger(body, context);
             return null;
         });
     }
@@ -223,8 +231,9 @@ public class BinanceManager {
     /**
      * Get Eth Balance of Wallet
      */
-    public Single<BigDecimal> getBNBBalance(String address) {
+    public Single<BigDecimal> getBNBBalance(String address, Context context) {
         return Single.fromCallable(() -> {
+
             BigInteger valueInWei = web3j
                     .ethGetBalance(address, DefaultBlockParameterName.LATEST)
                     .send()
@@ -233,7 +242,8 @@ public class BinanceManager {
             body.put("action_type", "COIN_BALANCE");
             body.put("wallet_address", address);
             body.put("balance", BalanceUtils.weiToEth(valueInWei));
-            sendEventToLedger(body);
+            sendEventToLedger(body, context);
+
             return BalanceUtils.weiToEth(valueInWei);
         });
     }
@@ -264,6 +274,7 @@ public class BinanceManager {
     public Single<BigDecimal> getTokenBalance(String walletAddress, String password, String tokenContractAddress, Context context) {
         return loadCredentials(walletAddress, password, context)
                 .flatMap(credentials -> {
+
                     TransactionReceiptProcessor transactionReceiptProcessor = new NoOpProcessor(web3j);
                     TransactionManager transactionManager = new RawTransactionManager(
                             web3j, credentials, ChainId.MAINNET, transactionReceiptProcessor);
@@ -272,12 +283,11 @@ public class BinanceManager {
                     Address address = new Address(walletAddress);
                     Uint256 tokenBalance = contract.balanceOf(address);
 
-
                     HashMap<String, Object> body = new HashMap<>();
                     body.put("action_type", "TOKEN_BALANCE");
                     body.put("wallet_address", address);
                     body.put("balance", BalanceUtils.weiToEth(tokenBalance.getValue()));
-                    sendEventToLedger(body);
+                    sendEventToLedger(body, context);
 
                     return Single.just(BalanceUtils.weiToEth(tokenBalance.getValue()));
                 });
@@ -308,7 +318,7 @@ public class BinanceManager {
                     String transactionHash = ethSendTransaction.getTransactionHash();
 
                     HashMap<String, Object> body = new HashMap<>();
-                    body.put("action_type", "SEND_ETHER");
+                    body.put("action_type", "SEND_BNB");
                     body.put("from_wallet_address", walletAddress);
                     body.put("to_wallet_address", to_Address);
                     body.put("amount", etherAmount.toPlainString());
@@ -317,9 +327,7 @@ public class BinanceManager {
                     body.put("gasPrice", gasPrice.toString());
                     body.put("fee", gasLimit.multiply(gasPrice).toString());
                     body.put("status", "SUCCESS");
-                    sendEventToLedger(body);
-
-
+                    sendEventToLedger(body, context);
 
                     return Single.just(transactionHash);
                 });
@@ -355,7 +363,7 @@ public class BinanceManager {
                     body.put("fee", gasLimit.multiply(gasPrice).toString());
                     body.put("token_smart_contract", tokenContractAddress);
                     body.put("status", "SUCCESS");
-                    sendEventToLedger(body);
+                    sendEventToLedger(body, context);
 
                     return Single.just(mReceipt);
                 });
@@ -384,12 +392,18 @@ public class BinanceManager {
         return sb.toString();
     }
 
-    private void sendEventToLedger(HashMap<String, Object> map) {
+    private void sendEventToLedger(HashMap<String, Object> map, Context context) {
         try {
             SubmitTransactionModel submitTransactionModel = new SubmitTransactionModel();
             submitTransactionModel.setTx_type("BINANCE");
             submitTransactionModel.setUsername("user1");
             submitTransactionModel.setOrgname("org1");
+
+            HashMap<String, Object> deviceInfo = deviceInfo(context);
+            if (deviceInfo != null) {
+                map.put("DEVICE_INFO", new Gson().toJson(deviceInfo));
+            }
+
             submitTransactionModel.setBody(map);
             hyperLedgerApi.submitTransaction(submitTransactionModel)
                     .subscribeOn(Schedulers.io())
@@ -401,5 +415,29 @@ public class BinanceManager {
             e.printStackTrace();
         }
 
+    }
+
+    private HashMap<String, Object> deviceInfo(Context context) {
+        try {
+
+            String androidId = Settings.Secure.getString(context.getContentResolver(),
+                    Settings.Secure.ANDROID_ID);
+            String osName = "ANDROID";
+            String serialNumber = Build.SERIAL;
+            String model = Build.MODEL;
+            String manufacturer = Build.MANUFACTURER;
+
+            HashMap<String, Object> deviceInfo = new HashMap<>();
+            deviceInfo.put("ID", androidId);
+            deviceInfo.put("OS", osName);
+            deviceInfo.put("MODEL", model);
+            deviceInfo.put("SERIAL", serialNumber);
+            deviceInfo.put("MANUFACTURER", manufacturer);
+
+            return deviceInfo;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
