@@ -1,4 +1,4 @@
-# Binance SmartChain Client SDK 
+# Binance SmartChain Android SDK 
 
 
 ## Table of Contents
