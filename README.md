@@ -10,6 +10,8 @@
   - [Create Wallet](#create-wallet)
   - [Import Wallet By Keystore](#import-wallet-by-keystore)
   - [Import Wallet By Private Key](#import-wallet-by-private-key)
+  - [Export Keystore](#export-keystore)
+  - [Export Private Key](#export-private-key)
   - [BNB Balance](#bnb-balance)
   - [BEP20 token balance](#bep20-token-balance)
   - [Send BNB](#send-bnb)
@@ -134,6 +136,43 @@ binanceManager.importFromPrivateKey(privateKey, this)
                 });
 ```
 
+### Export Keystore
+
+> If you want to export wallet address’s keystore you can use a code written below.
+
+```java
+BinanceManager binanceManager = BinanceManager.getInstance();
+binanceManager.getKeyStore(walletAddress, this)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(keystore -> {
+
+	    Toast.makeText(this, "Key storey : " + keystore, Toast.LENGTH_SHORT).show();
+
+        }, error -> {      
+            Toast.makeText(this, "Please insert valid wallet address", Toast.LENGTH_SHORT).show();
+        });
+```
+### Export Private Key
+
+> If you want to export wallet address’s private key you can use a code written below.
+
+```java
+BinanceManager binanceManager = BinanceManager.getInstance();
+String walletAddress = "WALLET_ADDRESS";
+String password = "WALLET_PASSWORD";
+binanceManager.exportPrivateKey(walletAddress, password,this)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(privatekey -> {
+            Toast.makeText(this, "Private Key : " + privatekey, Toast.LENGTH_SHORT).show();
+            
+        }, error -> {
+                        
+            Toast.makeText(this, error.getMessage(), Toast.LENGTH_SHORT).show();
+});
+
+```
 
 ### BNB Balance
 
