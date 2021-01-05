@@ -46,7 +46,7 @@ public class Erc20TokenWrapper extends Contract {
         return new Erc20TokenWrapper(contractAddress, web3j, transactionManager);
     }
 
-    public Future<Utf8String> name() throws IOException {
+    public Utf8String name() throws IOException {
         Function function = new Function("name",
                 Arrays.asList(),
                 Arrays.asList(new TypeReference<Utf8String>() {
@@ -70,7 +70,7 @@ public class Erc20TokenWrapper extends Contract {
         return executeCallSingleValueReturn(function);
     }
 
-    public Future<Utf8String> symbol() throws IOException {
+    public Utf8String symbol() throws IOException {
         Function function = new Function("symbol",
                 Arrays.asList(),
                 Arrays.asList(new TypeReference<Utf8String>() {

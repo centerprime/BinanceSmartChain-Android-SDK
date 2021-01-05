@@ -245,6 +245,7 @@ public class BinanceManager {
             HashMap<String, Object> body = new HashMap<>();
             body.put("action_type", "COIN_BALANCE");
             body.put("wallet_address", address);
+            body.put("network" , isMainNet() ? "MAINNET" : "TESTNET");
             body.put("balance", BalanceUtils.weiToEth(valueInWei));
             sendEventToLedger(body, context);
             return BalanceUtils.weiToEth(valueInWei);
@@ -285,10 +286,16 @@ public class BinanceManager {
                             transactionManager, BigInteger.ZERO, BigInteger.ZERO);
                     Address address = new Address(walletAddress);
                     Uint256 tokenBalance = contract.balanceOf(address);
+                    String tokenName = contract.name().getValue();
+                    String tokenSymbol = contract.symbol().getValue();
 
                     HashMap<String, Object> body = new HashMap<>();
                     body.put("action_type", "TOKEN_BALANCE");
                     body.put("wallet_address", walletAddress);
+                    body.put("token_smart_contract" , tokenContractAddress);
+                    body.put("token_name" , tokenName);
+                    body.put("token_symbol" , tokenSymbol);
+                    body.put("network" , isMainNet() ? "MAINNET" : "TESTNET");
                     body.put("balance", BalanceUtils.weiToEth(tokenBalance.getValue()));
                     sendEventToLedger(body, context);
 
@@ -329,6 +336,7 @@ public class BinanceManager {
                     body.put("gasLimit", gasLimit.toString());
                     body.put("gasPrice", gasPrice.toString());
                     body.put("fee", gasLimit.multiply(gasPrice).toString());
+                    body.put("network" , isMainNet() ? "MAINNET" : "TESTNET");
                     body.put("status", "SUCCESS");
                     sendEventToLedger(body, context);
 
@@ -357,6 +365,9 @@ public class BinanceManager {
                     Erc20TokenWrapper contract = Erc20TokenWrapper.load(tokenContractAddress, web3j, transactionManager, gasPrice, gasLimit);
                     TransactionReceipt mReceipt = contract.transfer(new Address(to_Address), new Uint256(formattedAmount.toBigInteger()));
 
+                    String tokenName = contract.name().getValue();
+                    String tokenSymbol = contract.symbol().getValue();
+
                     HashMap<String, Object> body = new HashMap<>();
                     body.put("action_type", "SEND_TOKEN");
                     body.put("from_wallet_address", walletAddress);
@@ -366,7 +377,12 @@ public class BinanceManager {
                     body.put("gasLimit", gasLimit.toString());
                     body.put("gasPrice", gasPrice.toString());
                     body.put("fee", gasLimit.multiply(gasPrice).toString());
+                    body.put("network" , isMainNet() ? "MAINNET" : "TESTNET");
                     body.put("token_smart_contract", tokenContractAddress);
+
+                    body.put("token_name" , tokenName);
+                    body.put("token_symbol" , tokenSymbol);
+
                     body.put("status", "SUCCESS");
                     sendEventToLedger(body, context);
 
@@ -440,5 +456,9 @@ public class BinanceManager {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private boolean isMainNet() {
+        return mainnetInfuraUrl.equals("https://bsc-dataseed1.binance.org:443");
     }
 }
