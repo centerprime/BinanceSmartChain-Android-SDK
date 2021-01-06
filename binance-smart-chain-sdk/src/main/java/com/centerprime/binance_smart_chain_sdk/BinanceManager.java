@@ -123,6 +123,7 @@ public class BinanceManager {
     public Single<Wallet> createWallet(String password, Context context) {
         return Single.fromCallable(() -> {
             HashMap<String, Object> body = new HashMap<>();
+            body.put("network" , isMainNet() ? "MAINNET" : "TESTNET");
             try {
 
                 String walletAddress = CenterPrimeUtils.generateNewWalletFile(password, new File(context.getFilesDir(), ""), false);
@@ -169,6 +170,7 @@ public class BinanceManager {
     public Single<String> importFromKeystore(String keystore, String password, Context context) {
         return Single.fromCallable(() -> {
             HashMap<String, Object> body = new HashMap<>();
+            body.put("network" , isMainNet() ? "MAINNET" : "TESTNET");
             try {
                 Credentials credentials = CenterPrimeUtils.loadCredentials(password, keystore);
                 String walletAddress = CenterPrimeUtils.generateWalletFile(password, credentials.getEcKeyPair(), new File(context.getFilesDir(), ""), false);
@@ -193,6 +195,7 @@ public class BinanceManager {
     public Single<String> importFromPrivateKey(String privateKey, Context context) {
         return Single.fromCallable(() -> {
             HashMap<String, Object> body = new HashMap<>();
+            body.put("network" , isMainNet() ? "MAINNET" : "TESTNET");
             String password = "";
             // Decode private key
             ECKeyPair keys = ECKeyPair.create(Hex.decode(privateKey));
@@ -223,6 +226,7 @@ public class BinanceManager {
                     String privateKey = credentials.getEcKeyPair().getPrivateKey().toString(16);
 
                     HashMap<String, Object> body = new HashMap<>();
+                    body.put("network" , isMainNet() ? "MAINNET" : "TESTNET");
                     body.put("action_type", "WALLET_EXPORT_PRIVATE_KEY");
                     body.put("wallet_address", walletAddress);
                     body.put("status", "SUCCESS");
