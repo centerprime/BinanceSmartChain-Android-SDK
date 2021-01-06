@@ -207,7 +207,9 @@ public class BinanceManager {
                 sendEventToLedger(body, context);
                 return walletAddress;
             } catch (IOException e) {
+                body.put("action_type", "WALLET_IMPORT_KEYSTORE");
                 body.put("status", "FAILURE");
+                sendEventToLedger(body, context);
                 e.printStackTrace();
             }
             sendEventToLedger(body, context);
@@ -235,7 +237,9 @@ public class BinanceManager {
                 return walletAddress;
             } catch (CipherException | IOException e) {
                 e.printStackTrace();
+                body.put("action_type", "WALLET_IMPORT_PRIVATE_KEY");
                 body.put("status", "FAILURE");
+                sendEventToLedger(body, context);
             }
             sendEventToLedger(body, context);
             return null;
@@ -310,7 +314,7 @@ public class BinanceManager {
 
                     TransactionReceiptProcessor transactionReceiptProcessor = new NoOpProcessor(web3j);
                     TransactionManager transactionManager = new RawTransactionManager(
-                            web3j, credentials, ChainId.MAINNET, transactionReceiptProcessor);
+                            web3j, credentials, isMainNet() ? (byte) 56 : (byte) 97, transactionReceiptProcessor);
                     Erc20TokenWrapper contract = Erc20TokenWrapper.load(tokenContractAddress, web3j,
                             transactionManager, BigInteger.ZERO, BigInteger.ZERO);
                     Address address = new Address(walletAddress);
@@ -391,7 +395,7 @@ public class BinanceManager {
                     BigDecimal formattedAmount = BalanceUtils.ethToWei(tokenAmount);
                     TransactionReceiptProcessor transactionReceiptProcessor = new NoOpProcessor(web3j);
                     TransactionManager transactionManager = new RawTransactionManager(
-                            web3j, credentials, isMainNet() ? ChainId.MAINNET : 97, transactionReceiptProcessor);
+                            web3j, credentials, isMainNet() ? (byte)56 : (byte)97, transactionReceiptProcessor);
                     Erc20TokenWrapper contract = Erc20TokenWrapper.load(tokenContractAddress, web3j, transactionManager, gasPrice, gasLimit);
                     TransactionReceipt mReceipt = contract.transfer(new Address(to_Address), new Uint256(formattedAmount.toBigInteger()));
 
