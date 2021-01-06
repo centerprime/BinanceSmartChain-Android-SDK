@@ -157,6 +157,7 @@ public class BinanceManager {
             String walletPath = context.getFilesDir() + "/" + wallet.toLowerCase();
             File keystoreFile = new File(walletPath);
             HashMap<String, Object> body = new HashMap<>();
+            body.put("network" , isMainNet() ? "MAINNET" : "TESTNET");
             if (keystoreFile.exists()) {
 
                 body.put("action_type", "WALLET_EXPORT_KEYSTORE");
