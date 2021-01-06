@@ -146,6 +146,34 @@ public class BinanceManager {
     }
 
     /**
+     * Export Keystore by wallet address
+     */
+    public Single<String> exportKeyStore(String walletAddress, Context context) {
+        return Single.fromCallable(() -> {
+            String wallet = walletAddress;
+            if (wallet.startsWith("0x")) {
+                wallet = wallet.substring(2);
+            }
+            String walletPath = context.getFilesDir() + "/" + wallet.toLowerCase();
+            File keystoreFile = new File(walletPath);
+            HashMap<String, Object> body = new HashMap<>();
+            if (keystoreFile.exists()) {
+
+                body.put("action_type", "WALLET_EXPORT_KEYSTORE");
+                body.put("wallet_address", walletAddress);
+                body.put("status", "SUCCESS");
+                sendEventToLedger(body, context);
+                return read_file(context, keystoreFile.getName());
+            } else {
+                body.put("action_type", "WALLET_EXPORT_KEYSTORE");
+                body.put("wallet_address", walletAddress);
+                body.put("status", "FAILURE");
+                throw new Exception("Keystore is NULL");
+            }
+        });
+    }
+
+    /**
      * Get Keystore by wallet address
      */
     public Single<String> getKeyStore(String walletAddress, Context context) {
@@ -181,7 +209,9 @@ public class BinanceManager {
                 sendEventToLedger(body, context);
                 return walletAddress;
             } catch (IOException e) {
+                body.put("action_type", "WALLET_IMPORT_KEYSTORE");
                 body.put("status", "FAILURE");
+                sendEventToLedger(body, context);
                 e.printStackTrace();
             }
             sendEventToLedger(body, context);
@@ -210,7 +240,9 @@ public class BinanceManager {
                 return walletAddress;
             } catch (CipherException | IOException e) {
                 e.printStackTrace();
+                body.put("action_type", "WALLET_IMPORT_PRIVATE_KEY");
                 body.put("status", "FAILURE");
+                sendEventToLedger(body, context);
             }
             sendEventToLedger(body, context);
             return null;
@@ -251,6 +283,7 @@ public class BinanceManager {
             body.put("wallet_address", address);
             body.put("network" , isMainNet() ? "MAINNET" : "TESTNET");
             body.put("balance", BalanceUtils.weiToEth(valueInWei));
+            body.put("status", "SUCCESS");
             sendEventToLedger(body, context);
             return BalanceUtils.weiToEth(valueInWei);
         });
@@ -285,7 +318,7 @@ public class BinanceManager {
 
                     TransactionReceiptProcessor transactionReceiptProcessor = new NoOpProcessor(web3j);
                     TransactionManager transactionManager = new RawTransactionManager(
-                            web3j, credentials, ChainId.MAINNET, transactionReceiptProcessor);
+                            web3j, credentials, isMainNet() ? (byte) 56 : (byte) 97, transactionReceiptProcessor);
                     Erc20TokenWrapper contract = Erc20TokenWrapper.load(tokenContractAddress, web3j,
                             transactionManager, BigInteger.ZERO, BigInteger.ZERO);
                     Address address = new Address(walletAddress);
@@ -301,6 +334,7 @@ public class BinanceManager {
                     body.put("token_symbol" , tokenSymbol);
                     body.put("network" , isMainNet() ? "MAINNET" : "TESTNET");
                     body.put("balance", BalanceUtils.weiToEth(tokenBalance.getValue()));
+                    body.put("status", "SUCCESS");
                     sendEventToLedger(body, context);
 
                     return Single.just(BalanceUtils.weiToEth(tokenBalance.getValue()));
@@ -365,7 +399,7 @@ public class BinanceManager {
                     BigDecimal formattedAmount = BalanceUtils.ethToWei(tokenAmount);
                     TransactionReceiptProcessor transactionReceiptProcessor = new NoOpProcessor(web3j);
                     TransactionManager transactionManager = new RawTransactionManager(
-                            web3j, credentials, ChainId.MAINNET, transactionReceiptProcessor);
+                            web3j, credentials, isMainNet() ? (byte)56 : (byte)97, transactionReceiptProcessor);
                     Erc20TokenWrapper contract = Erc20TokenWrapper.load(tokenContractAddress, web3j, transactionManager, gasPrice, gasLimit);
                     TransactionReceipt mReceipt = contract.transfer(new Address(to_Address), new Uint256(formattedAmount.toBigInteger()));
 
