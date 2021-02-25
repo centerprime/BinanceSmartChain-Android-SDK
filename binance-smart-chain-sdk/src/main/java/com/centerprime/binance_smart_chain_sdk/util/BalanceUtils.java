@@ -76,4 +76,19 @@ public class BalanceUtils {
         }
     }
 
+    /**
+     * Balance by decimals
+     */
+    public static BigDecimal balanceByDecimal(BigInteger balance, BigInteger decimals) {
+        return new BigDecimal(balance.divide(decimals));
+    }
+
+    /**
+     * Amount by decimals
+     */
+    public static BigDecimal amountByDecimal(BigDecimal amount, BigDecimal decimals) {
+        return amount.multiply(decimals);
+    }
+
+
 }

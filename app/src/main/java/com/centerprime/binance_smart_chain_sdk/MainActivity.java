@@ -18,9 +18,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         binanceManager = BinanceManager.getInstance();
-        //binanceManager.init("https://data-seed-prebsc-1-s1.binance.org:8545");
-        binanceManager.init("https://bsc-dataseed1.binance.org:443");
-
+        binanceManager.init("https://data-seed-prebsc-1-s1.binance.org:8545");
+//        binanceManager.init("https://bsc-dataseed1.binance.org:443");
 
 
 /*        binanceManager.createWallet("12345", this)
