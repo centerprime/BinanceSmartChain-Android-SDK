@@ -1,5 +1,6 @@
 package com.centerprime.binance_smart_chain_sdk;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
@@ -21,8 +22,7 @@ public class MainActivity extends AppCompatActivity {
         binanceManager.init("https://data-seed-prebsc-1-s1.binance.org:8545");
 //        binanceManager.init("https://bsc-dataseed1.binance.org:443");
 
-
-/*        binanceManager.createWallet("12345", this)
+        binanceManager.createWallet("12345", this)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(wallet -> {
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("*** ***"+walletAddress);
                 }, error -> {
                     System.out.println(error);
-                });*/
+                });
 
 
 
