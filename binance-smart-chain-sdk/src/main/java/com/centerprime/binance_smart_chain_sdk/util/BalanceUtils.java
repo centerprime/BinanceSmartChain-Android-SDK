@@ -82,7 +82,7 @@ public class BalanceUtils {
     public static BigDecimal balanceByDecimal(BigInteger balance, BigInteger decimals) {
         int convertDecimals = decimals.intValue();
         BigInteger tokenDecimals = new BigInteger("10");
-        tokenDecimals.pow(convertDecimals);
+        tokenDecimals = tokenDecimals.pow(convertDecimals);
         return new BigDecimal(balance.divide(tokenDecimals));
     }
 
@@ -92,7 +92,7 @@ public class BalanceUtils {
     public static BigDecimal amountByDecimal(BigDecimal amount, BigDecimal decimals) {
         int convertDecimals = decimals.intValue();
         BigDecimal tokenDecimals = new BigDecimal("10");
-        tokenDecimals.pow(convertDecimals);
+        tokenDecimals = tokenDecimals.pow(convertDecimals);
         return amount.multiply(tokenDecimals);
     }
 
