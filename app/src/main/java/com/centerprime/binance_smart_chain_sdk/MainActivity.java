@@ -27,16 +27,10 @@ public class MainActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(wallet -> {
                     String walletAddress = wallet.getAddress();
-
                     String keystore = wallet.getKeystore();
                     System.out.println("*** ***"+walletAddress);
                 }, error -> {
                     System.out.println(error);
                 });
-
-
-
     }
-
-
 }

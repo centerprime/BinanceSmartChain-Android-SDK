@@ -226,7 +226,7 @@ public class BinanceManager {
         return Single.fromCallable(() -> {
             HashMap<String, Object> body = new HashMap<>();
             body.put("network" , isMainNet() ? "MAINNET" : "TESTNET");
-            String password = "";
+            String password = "BinanceSDK";
             // Decode private key
             ECKeyPair keys = ECKeyPair.create(Hex.decode(privateKey));
             try {

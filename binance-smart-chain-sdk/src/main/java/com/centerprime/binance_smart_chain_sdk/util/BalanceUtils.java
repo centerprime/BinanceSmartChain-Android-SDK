@@ -80,10 +80,9 @@ public class BalanceUtils {
      * Balance by decimals
      */
     public static BigDecimal balanceByDecimal(BigInteger balance, BigInteger decimals) {
-        int convertDecimals = decimals.intValue();
-        BigInteger tokenDecimals = new BigInteger("10");
-        tokenDecimals = tokenDecimals.pow(convertDecimals);
-        return new BigDecimal(balance.divide(tokenDecimals));
+        BigDecimal tokenDecimals = new BigDecimal(Math.pow(10, decimals.intValue()));
+        BigDecimal convertBalance = new BigDecimal(balance);
+        return convertBalance.divide(tokenDecimals);
     }
 
     /**
