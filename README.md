@@ -36,7 +36,7 @@ Maven:
 <dependency>
 	    <groupId>com.github.centerprime</groupId>
 	    <artifactId>Binance-Chain-Client-SDK</artifactId>
-	    <version>1.0.9</version>
+	    <version>1.12.7</version>
 </dependency>
 ```
 
@@ -44,7 +44,7 @@ Gradle:
 
 ```groovy
 dependencies {
-    implementation 'com.github.centerprime:Binance-Chain-Client-SDK:1.0.9'
+    implementation 'com.github.centerprime:Binance-Chain-Client-SDK:1.12.7'
 }
 ```
 
