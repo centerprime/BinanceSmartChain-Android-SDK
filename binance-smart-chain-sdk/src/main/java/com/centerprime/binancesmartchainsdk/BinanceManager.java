@@ -11,6 +11,7 @@ import com.centerprime.binance_smart_chain_sdk.util.Erc20TokenWrapper;
 import com.centerprime.binance_smart_chain_sdk.util.HyperLedgerApi;
 import com.centerprime.binance_smart_chain_sdk.util.SubmitTransactionModel;
 import com.centerprime.binance_smart_chain_sdk.util.Wallet;
+import com.centerprime.binancesmartchainsdk.util.Token;
 import com.google.gson.Gson;
 
 import org.spongycastle.util.encoders.Hex;
@@ -29,6 +30,7 @@ import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tx.ChainId;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.response.NoOpProcessor;
@@ -122,7 +124,7 @@ public class BinanceManager {
     public Single<Wallet> createWallet(String password, Context context) {
         return Single.fromCallable(() -> {
             HashMap<String, Object> body = new HashMap<>();
-            body.put("network" , isMainNet() ? "MAINNET" : "TESTNET");
+            body.put("network", isMainNet() ? "MAINNET" : "TESTNET");
             try {
 
                 String walletAddress = CenterPrimeUtils.generateNewWalletFile(password, new File(context.getFilesDir(), ""), false);
@@ -156,7 +158,7 @@ public class BinanceManager {
             String walletPath = context.getFilesDir() + "/" + wallet.toLowerCase();
             File keystoreFile = new File(walletPath);
             HashMap<String, Object> body = new HashMap<>();
-            body.put("network" , isMainNet() ? "MAINNET" : "TESTNET");
+            body.put("network", isMainNet() ? "MAINNET" : "TESTNET");
             if (keystoreFile.exists()) {
 
                 body.put("action_type", "WALLET_EXPORT_KEYSTORE");
@@ -198,7 +200,7 @@ public class BinanceManager {
     public Single<String> importFromKeystore(String keystore, String password, Context context) {
         return Single.fromCallable(() -> {
             HashMap<String, Object> body = new HashMap<>();
-            body.put("network" , isMainNet() ? "MAINNET" : "TESTNET");
+            body.put("network", isMainNet() ? "MAINNET" : "TESTNET");
             try {
                 Credentials credentials = CenterPrimeUtils.loadCredentials(password, keystore);
                 String walletAddress = CenterPrimeUtils.generateWalletFile(password, credentials.getEcKeyPair(), new File(context.getFilesDir(), ""), false);
@@ -225,7 +227,7 @@ public class BinanceManager {
     public Single<String> importFromPrivateKey(String privateKey, Context context) {
         return Single.fromCallable(() -> {
             HashMap<String, Object> body = new HashMap<>();
-            body.put("network" , isMainNet() ? "MAINNET" : "TESTNET");
+            body.put("network", isMainNet() ? "MAINNET" : "TESTNET");
             String password = "BinanceSDK";
             // Decode private key
             ECKeyPair keys = ECKeyPair.create(Hex.decode(privateKey));
@@ -258,7 +260,7 @@ public class BinanceManager {
                     String privateKey = credentials.getEcKeyPair().getPrivateKey().toString(16);
 
                     HashMap<String, Object> body = new HashMap<>();
-                    body.put("network" , isMainNet() ? "MAINNET" : "TESTNET");
+                    body.put("network", isMainNet() ? "MAINNET" : "TESTNET");
                     body.put("action_type", "WALLET_EXPORT_PRIVATE_KEY");
                     body.put("wallet_address", walletAddress);
                     body.put("status", "SUCCESS");
@@ -281,7 +283,7 @@ public class BinanceManager {
             HashMap<String, Object> body = new HashMap<>();
             body.put("action_type", "COIN_BALANCE");
             body.put("wallet_address", address);
-            body.put("network" , isMainNet() ? "MAINNET" : "TESTNET");
+            body.put("network", isMainNet() ? "MAINNET" : "TESTNET");
             body.put("balance", BalanceUtils.weiToEth(valueInWei));
             body.put("status", "SUCCESS");
             sendEventToLedger(body, context);
@@ -310,7 +312,26 @@ public class BinanceManager {
     }
 
     /**
-     * Get ERC20 Token Balance of Wallet
+     * Add Custom Token
+     */
+    public Single<Token> searchTokenByContractAddress(String contractAddress, String walletAddress, String password, Context context) {
+        return loadCredentials(walletAddress, password, context)
+                .flatMap(credentials -> {
+                    TransactionReceiptProcessor transactionReceiptProcessor = new NoOpProcessor(web3j);
+                    TransactionManager transactionManager = new RawTransactionManager(
+                            web3j, credentials, isMainNet() ? (byte) 56 : (byte) 97, transactionReceiptProcessor);
+                    Erc20TokenWrapper contract = Erc20TokenWrapper.load(contractAddress, web3j, transactionManager, BigInteger.ZERO, BigInteger.ZERO);
+                    String tokenName = contract.name().getValue();
+                    String tokenSymbol = contract.symbol().getValue();
+                    BigInteger decimalCount = contract.decimals().getValue();
+
+                    return Single.just(new Token(contractAddress, tokenSymbol, tokenName, decimalCount.toString()));
+                });
+
+    }
+
+    /**
+     * Get BEP20 Token Balance of Wallet
      */
     public Single<BigDecimal> getTokenBalance(String walletAddress, String password, String tokenContractAddress, Context context) {
         return loadCredentials(walletAddress, password, context)
@@ -348,11 +369,11 @@ public class BinanceManager {
      * Send Ether
      */
     public Single<String> sendBNB(String walletAddress, String password,
-                                    BigInteger gasPrice,
-                                    BigInteger gasLimit,
-                                    BigDecimal etherAmount,
-                                    String to_Address,
-                                    Context context) {
+                                  BigInteger gasPrice,
+                                  BigInteger gasLimit,
+                                  BigDecimal etherAmount,
+                                  String to_Address,
+                                  Context context) {
         return loadCredentials(walletAddress, password, context)
                 .flatMap(credentials -> {
 
@@ -377,10 +398,9 @@ public class BinanceManager {
                     body.put("gasLimit", gasLimit.toString());
                     body.put("gasPrice", gasPrice.toString());
                     body.put("fee", gasLimit.multiply(gasPrice).toString());
-                    body.put("network" , isMainNet() ? "MAINNET" : "TESTNET");
+                    body.put("network", isMainNet() ? "MAINNET" : "TESTNET");
                     body.put("status", "SUCCESS");
                     sendEventToLedger(body, context);
-
 
 
                     return Single.just(transactionHash);
@@ -391,12 +411,12 @@ public class BinanceManager {
      * Send Token
      */
     public Single<String> sendToken(String walletAddress, String password,
-                                                BigInteger gasPrice,
-                                                BigInteger gasLimit,
-                                                BigDecimal tokenAmount,
-                                                String to_Address,
-                                                String tokenContractAddress,
-                                                Context context) {
+                                    BigInteger gasPrice,
+                                    BigInteger gasLimit,
+                                    BigDecimal tokenAmount,
+                                    String to_Address,
+                                    String tokenContractAddress,
+                                    Context context) {
         return loadCredentials(walletAddress, password, context)
                 .flatMap(credentials -> {
                     TransactionReceiptProcessor transactionReceiptProcessor = new NoOpProcessor(web3j);
@@ -421,11 +441,11 @@ public class BinanceManager {
                     body.put("gasLimit", gasLimit.toString());
                     body.put("gasPrice", gasPrice.toString());
                     body.put("fee", gasLimit.multiply(gasPrice).toString());
-                    body.put("network" , isMainNet() ? "MAINNET" : "TESTNET");
+                    body.put("network", isMainNet() ? "MAINNET" : "TESTNET");
                     body.put("token_smart_contract", tokenContractAddress);
 
-                    body.put("token_name" , tokenName);
-                    body.put("token_symbol" , tokenSymbol);
+                    body.put("token_name", tokenName);
+                    body.put("token_symbol", tokenSymbol);
 
                     body.put("status", "SUCCESS");
                     sendEventToLedger(body, context);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.centerprime.binance_smart_chain_sdk">
+    package="com.centerprime.binancesmartchainsdk">
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:allowBackup="true"
@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/Theme.Binancechainsdk">
-        <activity android:name="com.centerprime.binance_smart_chain_sdk.MainActivity">
+        <activity android:name="com.centerprime.binancesmartchainsdk.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
