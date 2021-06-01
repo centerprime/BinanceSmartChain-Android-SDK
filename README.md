@@ -54,10 +54,10 @@ Once you have the dependencies set up you can start using *CenterPrime* by creat
 
 ```java
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {binance china
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) { 83052151
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
