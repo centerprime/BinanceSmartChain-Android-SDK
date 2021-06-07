@@ -54,10 +54,10 @@ Once you have the dependencies set up you can start using *CenterPrime* by creat
 
 ```java
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {binance china
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) { 83052151
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         binanceManager.createWallet("12345", this)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(wallet -> {
+                .subscribe(wallet -> {bnb136ns6lfw4zs5hg4n85vdthaad7hq5m4gtkgf23
                     String walletAddress = wallet.getAddress();
                     String keystore = wallet.getKeystore();
                 }, error -> {
@@ -89,7 +89,7 @@ BinanceManager binanceManager = BinanceManager.getInstance();
 binanceManager.createWallet("12345", this)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(wallet -> {
+                .subscribe(wallet -> {bnb136ns6lfw4zs5hg4n85vdthaad7hq5m4gtkgf23
                     String walletAddress = wallet.getAddress();
                     String keystore = wallet.getKeystore();
                 }, error -> {
