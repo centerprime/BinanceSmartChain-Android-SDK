@@ -271,7 +271,7 @@ public class BinanceManager {
     }
 
     /**
-     * Get Eth Balance of Wallet
+     * Get BNB Balance of Wallet
      */
     public Single<BigDecimal> getBNBBalance(String address, Context context) {
         return Single.fromCallable(() -> {
@@ -366,19 +366,19 @@ public class BinanceManager {
     }
 
     /**
-     * Send Ether
+     * Send BNB
      */
     public Single<String> sendBNB(String walletAddress, String password,
                                   BigInteger gasPrice,
                                   BigInteger gasLimit,
-                                  BigDecimal etherAmount,
+                                  BigDecimal bnbAmount,
                                   String to_Address,
                                   Context context) {
         return loadCredentials(walletAddress, password, context)
                 .flatMap(credentials -> {
 
                     BigInteger nonce = getNonce(walletAddress);
-                    BigDecimal weiValue = Convert.toWei(etherAmount, Convert.Unit.ETHER);
+                    BigDecimal weiValue = Convert.toWei(bnbAmount, Convert.Unit.ETHER);
 
                     RawTransaction rawTransaction = RawTransaction.createEtherTransaction(
                             nonce, gasPrice, gasLimit, to_Address, weiValue.toBigIntegerExact());
@@ -393,7 +393,7 @@ public class BinanceManager {
                     body.put("action_type", "SEND_BNB");
                     body.put("from_wallet_address", walletAddress);
                     body.put("to_wallet_address", to_Address);
-                    body.put("amount", etherAmount.toPlainString());
+                    body.put("amount", bnbAmount.toPlainString());
                     body.put("tx_hash", transactionHash);
                     body.put("gasLimit", gasLimit.toString());
                     body.put("gasPrice", gasPrice.toString());
